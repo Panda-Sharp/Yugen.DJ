@@ -1,7 +1,12 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Logging;
+using NLog.Config;
+using NLog.Extensions.Logging;
+using NLog.Targets;
 using System;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
+using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
@@ -11,7 +16,6 @@ using Yugen.DJ.Services;
 
 namespace Yugen.DJ
 {
-
     /// <summary>
     /// Provides application-specific behavior to supplement the default Application class.
     /// </summary>
@@ -30,6 +34,32 @@ namespace Yugen.DJ
             {
                 collection.AddSingleton<IAudioDeviceService, AudioDeviceService>();
                 collection.AddTransient<IAudioService, AudioService>();
+                collection.AddLogging(loggingBuilder =>
+                {
+                    // UWP is very restrictive of where you can save files on the disk.
+                    // The preferred place to do that is app's local folder.
+                    StorageFolder folder = ApplicationData.Current.LocalFolder;
+                    string fullPath = $"{folder.Path}\\Logs\\{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
+
+                    var config = new LoggingConfiguration();
+                    var logFile = new FileTarget()
+                    {
+                        FileName = fullPath,
+                        Layout = "${longdate} ${uppercase:${level}} ${message} ${exception}",
+                        ConcurrentWrites = false
+                    };
+                    var logTrace = new TraceTarget();
+                    // var logOutput = new OutputDebugStringTarget();
+
+                    // Rules for mapping loggers to targets
+                    config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, logTrace);
+                    config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logFile);
+
+                    // configure Logging with NLog
+                    loggingBuilder.ClearProviders();
+                    loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
+                    loggingBuilder.AddNLog(config);
+                });
             });
         }
 
@@ -77,7 +107,7 @@ namespace Yugen.DJ
         /// </summary>
         /// <param name="sender">The Frame which failed navigation</param>
         /// <param name="e">Details about the navigation failure</param>
-        void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
+        private void OnNavigationFailed(object sender, NavigationFailedEventArgs e)
         {
             throw new Exception("Failed to load Page " + e.SourcePageType.FullName);
         }

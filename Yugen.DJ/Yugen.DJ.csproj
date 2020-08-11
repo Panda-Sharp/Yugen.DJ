@@ -29,6 +29,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
     <OutputPath>bin\x86\Release\</OutputPath>
@@ -41,6 +42,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
     <DebugSymbols>true</DebugSymbols>
@@ -52,6 +54,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
     <OutputPath>bin\ARM\Release\</OutputPath>
@@ -64,6 +67,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
     <DebugSymbols>true</DebugSymbols>
@@ -76,6 +80,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
     <OutputPath>bin\ARM64\Release\</OutputPath>
@@ -88,6 +93,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
     <DebugSymbols>true</DebugSymbols>
@@ -99,6 +105,7 @@
     <UseVSHostingProcess>false</UseVSHostingProcess>
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
     <OutputPath>bin\x64\Release\</OutputPath>
@@ -111,6 +118,7 @@
     <ErrorReport>prompt</ErrorReport>
     <Prefer32Bit>true</Prefer32Bit>
     <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
   <PropertyGroup>
     <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
@@ -119,17 +127,37 @@
     <Compile Include="App.xaml.cs">
       <DependentUpon>App.xaml</DependentUpon>
     </Compile>
+    <Compile Include="Audio\AudioFrameInput\AudioFrameService.cs" />
+    <Compile Include="Audio\AudioFrameInput\IMemoryBufferByteAccess.cs" />
+    <Compile Include="Audio\SystemVolume\Interfaces\IActivateAudioInterfaceCompletionHandler.cs" />
+    <Compile Include="Audio\SystemVolume\Models\HResult.cs" />
+    <Compile Include="Audio\SystemVolume\Interfaces\IActivateAudioInterfaceAsyncOperation.cs" />
+    <Compile Include="Audio\SystemVolume\Interfaces\IAudioEndpointVolume.cs" />
+    <Compile Include="Audio\SystemVolume\VolumeControl.cs" />
+    <Compile Include="Audio\BPM\BPMDetector.cs" />
+    <Compile Include="Audio\BPM\BpmExtensions.cs" />
+    <Compile Include="Audio\WaveForm\Providers\AveragePeakProvider.cs" />
+    <Compile Include="Audio\WaveForm\Providers\DecibelPeakProvider.cs" />
+    <Compile Include="Audio\WaveForm\Interfaces\IPeakProvider.cs" />
+    <Compile Include="Audio\WaveForm\Models\PeakInfo.cs" />
+    <Compile Include="Audio\WaveForm\Providers\MaxPeakProvider.cs" />
+    <Compile Include="Audio\WaveForm\Providers\PeakProvider.cs" />
+    <Compile Include="Audio\WaveForm\Providers\RmsPeakProvider.cs" />
+    <Compile Include="Audio\WaveForm\Providers\SamplingPeakProvider.cs" />
+    <Compile Include="Audio\WaveForm\WaveFormRenderer.cs" />
+    <Compile Include="Audio\WaveForm\Models\WaveFormRendererSettings.cs" />
     <Compile Include="Services\AudioDeviceService.cs" />
     <Compile Include="Services\AudioService.cs" />
     <Compile Include="DependencyInjection\Ioc.cs" />
     <Compile Include="Interfaces\IAudioService.cs" />
     <Compile Include="Interfaces\IAudioDeviceService.cs" />
-    <Compile Include="ViewModels\DeckViewModel.cs" />
+    <Compile Include="Renderers\TouchPointsRenderer.cs" />
+    <Compile Include="ViewModels\MainViewModel.cs" />
     <Compile Include="MainPage.xaml.cs">
       <DependentUpon>MainPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="Renderer\VinylRenderer.cs" />
+    <Compile Include="Renderers\VinylRenderer.cs" />
     <Compile Include="ViewModels\VinylViewModel.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -138,7 +166,7 @@
     </AppxManifest>
   </ItemGroup>
   <ItemGroup>
-    <Content Include="Assets\Vinyl.png" />
+    <Content Include="Assets\Images\Vinyl.png" />
     <Content Include="Properties\Default.rd.xml" />
     <Content Include="Assets\LockScreenLogo.scale-200.png" />
     <Content Include="Assets\SplashScreen.scale-200.png" />
@@ -167,6 +195,12 @@
     </PackageReference>
     <PackageReference Include="Microsoft.Toolkit.Uwp">
       <Version>6.1.0</Version>
+    </PackageReference>
+    <PackageReference Include="NAudio">
+      <Version>1.10.0</Version>
+    </PackageReference>
+    <PackageReference Include="NLog.Extensions.Logging">
+      <Version>1.6.4</Version>
     </PackageReference>
     <PackageReference Include="UWPAudioVisualizer">
       <Version>1.0.38</Version>

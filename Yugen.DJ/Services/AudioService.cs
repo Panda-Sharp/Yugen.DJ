@@ -5,7 +5,6 @@ using System.Collections.Generic;
 using System.Threading.Tasks;
 using Windows.Media.Audio;
 using Windows.Media.Render;
-using Windows.Security.Cryptography.Core;
 using Windows.Storage;
 using Yugen.DJ.DependencyInjection;
 using Yugen.DJ.Interfaces;
@@ -26,12 +25,18 @@ namespace Yugen.DJ.Services
         private AudioDeviceOutputNode headphonesDeviceOutput;
         private AudioFileInputNode headphonesFileInput;
 
+        private PlaybackSource _source;
+        private DiscreteVUBar VUBarChannel0;
+        private DiscreteVUBar VUBarChannel1;
+
         public AudioService()
         {
             _audioDeviceService = Ioc.Default.GetService<IAudioDeviceService>();
         }
 
         public event EventHandler<TimeSpan> PositionChanged;
+
+        public event EventHandler<StorageFile> FileLoaded;
 
         public TimeSpan NaturalDuration => masterFileInput?.Duration ?? new TimeSpan();
 
@@ -44,11 +49,14 @@ namespace Yugen.DJ.Services
         public async Task OpenFile()
         {
             file = await FilePickerHelper.OpenFile(
-                new List<string> { ".mp3" },
-                Windows.Storage.Pickers.PickerLocationId.MusicLibrary);
+                    new List<string> { ".mp3" },
+                    Windows.Storage.Pickers.PickerLocationId.MusicLibrary
+                );
 
             if (file == null)
                 return;
+
+            FileLoaded?.Invoke(null, file);
 
             DisposeFileInputs();
 
@@ -107,6 +115,12 @@ namespace Yugen.DJ.Services
             }
         }
 
+        public void AddAudioVisualizer(DiscreteVUBar VUBarChannel0, DiscreteVUBar VUBarChannel1)
+        {
+            this.VUBarChannel0 = VUBarChannel0;
+            this.VUBarChannel1 = VUBarChannel1;
+        }
+
         private async Task InitMasterDevice()
         {
             AudioGraphSettings settings = new AudioGraphSettings(AudioRenderCategory.Media)
@@ -119,7 +133,7 @@ namespace Yugen.DJ.Services
                 return;
 
             masterAudioGraph = result.Graph;
-            masterAudioGraph.QuantumProcessed += Graph_QuantumProcessed;
+            masterAudioGraph.QuantumProcessed += MasterAudioGraphOnQuantumProcessed; ;
 
             CreateAudioDeviceOutputNodeResult deviceOutputNodeResult = await masterAudioGraph.CreateDeviceOutputNodeAsync();
             if (deviceOutputNodeResult.Status != AudioDeviceNodeCreationStatus.Success)
@@ -151,8 +165,9 @@ namespace Yugen.DJ.Services
             headphonesDeviceOutput = deviceOutputNodeResult.DeviceOutputNode;
         }
 
-        private void Graph_QuantumProcessed(AudioGraph sender, object args)
+        private void MasterAudioGraphOnQuantumProcessed(AudioGraph sender, object args)
         {
+            //var data = _source?.Source?.GetData();
             PositionChanged?.Invoke(sender, masterFileInput?.Position ?? new TimeSpan());
         }
 
@@ -194,41 +209,50 @@ namespace Yugen.DJ.Services
             headphonesFileInput.AddOutgoingConnection(headphonesDeviceOutput);
         }
 
-
-        private PlaybackSource _source;
-        private SpectrumVisualizer _spectrumVisualizer;
-        private DiscreteVUBar _leftVUBarChanel0;
-        private DiscreteVUBar _leftVUBarChanel1;
-
-        public void AddAudioVisualizer(SpectrumVisualizer spectrumVisualizer)
-        {
-            _spectrumVisualizer = spectrumVisualizer;
-        }
-
-        public void AddAudioVisualizer(DiscreteVUBar leftVUBarChanel0, DiscreteVUBar leftVUBarChanel1)
-        {
-            _leftVUBarChanel0 = leftVUBarChanel0;
-            _leftVUBarChanel1 = leftVUBarChanel1;
-        }
-
         private void AddFileInputToAudioVisualizer()
         {
             if (masterFileInput == null)
                 return;
 
             _source = PlaybackSource.CreateFromAudioNode(masterFileInput);
-            _source.SourceChanged += Playback_SourceChanged;
 
-            _spectrumVisualizer.Source = _source.Source;
-            _leftVUBarChanel0.Source = _source.Source;
-            _leftVUBarChanel1.Source = _source.Source;
-        }
+            VUBarChannel0.Source = _source.Source;
+            VUBarChannel1.Source = _source.Source;
 
-        private void Playback_SourceChanged(object sender, IVisualizationSource source)
-        {
-            _spectrumVisualizer.Source = source;
-            _leftVUBarChanel0.Source = source;
-            _leftVUBarChanel1.Source = source;
+            // converter
+            //SourceConverter sourceConverter = new SourceConverter
+            //{
+            //    Source = _source.Source,
+
+            //    AnalyzerTypes = AnalyzerType.RMS | AnalyzerType.Peak,
+            //    RmsRiseTime = TimeSpan.FromMilliseconds(50),
+            //    RmsFallTime = TimeSpan.FromMilliseconds(50),
+            //    PeakRiseTime = TimeSpan.FromMilliseconds(500),
+            //    PeakFallTime = TimeSpan.FromMilliseconds(500),
+
+            //    //AnalyzerTypes = AnalyzerType.Spectrum,
+            //    //SpectrumRiseTime = TimeSpan.FromMilliseconds(500),
+            //    //SpectrumFallTime = TimeSpan.FromMilliseconds(500),
+
+            //    //FrequencyCount =  12 * 5 * 5; // 5 octaves, 5 bars per note
+            //    //MinFrequency = 110.0f;    // Note A2
+            //    //MaxFrequency = 3520.0f;  // Note A7
+            //    //FrequencyScale = ScaleType.Logarithmic,
+
+            //    //CacheData = true,
+            //    //ChannelCount = 2,
+            //    //ChannelMapping = new float[] { 0 },
+            //    //Fps = 60f,
+            //    //IsSuspended = true,
+            //    //PlaybackState =SourcePlaybackState.Playing
+            //};
+            //var data = sourceConverter.GetData();
+
+            //VUBarChannel0.Source = sourceConverter;
+            //VUBarChannel1.Source = sourceConverter;
+
+            // ElementFactory
+            //VUBarChannel0.ElementFactory
         }
     }
 }

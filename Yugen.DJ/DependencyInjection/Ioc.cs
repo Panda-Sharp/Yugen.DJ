@@ -1,7 +1,6 @@
-﻿using System;
+﻿using Microsoft.Extensions.DependencyInjection;
+using System;
 using System.Threading;
-using Microsoft.Extensions.DependencyInjection;
-
 
 namespace Yugen.DJ.DependencyInjection
 {
@@ -39,14 +38,14 @@ namespace Yugen.DJ.DependencyInjection
     public sealed class Ioc : IServiceProvider
     {
         /// <summary>
-        /// Gets the default <see cref="Ioc"/> instance.
-        /// </summary>
-        public static Ioc Default { get; } = new Ioc();
-
-        /// <summary>
         /// The <see cref="ServiceProvider"/> instance to use, if initialized.
         /// </summary>
         private ServiceProvider serviceProvider;
+
+        /// <summary>
+        /// Gets the default <see cref="Ioc"/> instance.
+        /// </summary>
+        public static Ioc Default { get; } = new Ioc();
 
         /// <inheritdoc/>
         object IServiceProvider.GetService(Type serviceType)

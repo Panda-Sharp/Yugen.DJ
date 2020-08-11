@@ -14,7 +14,7 @@
       Unloaded="OnUnloaded">
 
     <Page.DataContext>
-        <viewmodels:DeckViewModel x:Name="ViewModel" />
+        <viewmodels:MainViewModel x:Name="ViewModel" />
     </Page.DataContext>
 
     <Grid>
@@ -33,59 +33,119 @@
             <ColumnDefinition Width="*" />
         </Grid.ColumnDefinitions>
 
-        <StackPanel Grid.Column="0">
+        <Grid Grid.Column="0">
 
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="2"
-                           Text="Duration" />
-                <TextBlock Margin="2"
-                           Text="{x:Bind ViewModel.VinylLeft.NaturalDuration, Mode=OneWay}" />
-                <TextBlock Margin="2"
-                           Text="Position" />
-                <TextBlock Margin="2"
-                           Text="{x:Bind ViewModel.VinylLeft.Position, Mode=OneWay}" />
-            </StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <visualizer:SpectrumVisualizer x:Name="LeftSpectrumVisualizer"
-                                           Height="100"
-                                           Width="600" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
+
+            <TextBlock Grid.Column="0"
+                       Text="{x:Bind ViewModel.VinylLeft.Position, Mode=OneWay}" />
+            
+            <TextBlock Grid.Column="1"
+                       Text="{x:Bind ViewModel.VinylLeft.BPM, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="2"
+                       HorizontalAlignment="Right"
+                       Text="{x:Bind ViewModel.VinylLeft.NaturalDuration, Mode=OneWay}" />
+
+            <canvas:CanvasControl x:Name="LeftWaveFormCanvas"
+                                  Grid.Row="1"
+                                  Grid.ColumnSpan="3"
+                                  Draw="{x:Bind LeftVinylRenderer.OnCanvasDraw}"
+                                  Height="100"
+                                  Width="500" />
+
+            <TextBlock Grid.Row="2"
+                       Text="{x:Bind ViewModel.VinylLeft.Artist, Mode=OneWay}" />
+
+            <TextBlock Grid.Row="2"
+                       Grid.Column="2"
+                       HorizontalAlignment="Right"
+                       Text="{x:Bind ViewModel.VinylLeft.Title, Mode=OneWay}" />
+
+        </Grid>
+
+        <StackPanel Grid.Column="1"
+                    Grid.ColumnSpan="3">
+
+            <Slider Grid.Row="2"
+                    Grid.Column="4"
+                    Header="Master Volume"
+                    Minimum="0"
+                    Maximum="100"
+                    TickFrequency="10"
+                    TickPlacement="Outside"
+                    Value="{x:Bind ViewModel.MasterVolume, Mode=TwoWay}"
+                    Width="200" />
 
         </StackPanel>
 
-        <StackPanel Grid.Column="4">
+        <Grid Grid.Column="4">
 
-            <StackPanel Orientation="Horizontal">
-                <TextBlock Margin="2"
-                           Text="Duration" />
-                <TextBlock Margin="2"
-                           Text="{x:Bind ViewModel.VinylRight.NaturalDuration, Mode=OneWay}" />
-                <TextBlock Margin="2"
-                           Text="Position" />
-                <TextBlock Margin="2"
-                           Text="{x:Bind ViewModel.VinylRight.Position, Mode=OneWay}" />
-            </StackPanel>
+            <Grid.RowDefinitions>
+                <RowDefinition Height="Auto" />
+                <RowDefinition />
+                <RowDefinition Height="Auto" />
+            </Grid.RowDefinitions>
 
-            <visualizer:SpectrumVisualizer x:Name="RightSpectrumVisualizer"
-                                           Height="100"
-                                           Width="600" />
+            <Grid.ColumnDefinitions>
+                <ColumnDefinition />
+                <ColumnDefinition Width="Auto" />
+                <ColumnDefinition />
+            </Grid.ColumnDefinitions>
 
-        </StackPanel>
+            <TextBlock Grid.Column="0"
+                       Text="{x:Bind ViewModel.VinylRight.Position, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="1"
+                       Text="{x:Bind ViewModel.VinylRight.BPM, Mode=OneWay}" />
+
+            <TextBlock Grid.Column="2"
+                       HorizontalAlignment="Right"
+                       Text="{x:Bind ViewModel.VinylRight.NaturalDuration, Mode=OneWay}" />
+
+            <canvas:CanvasControl x:Name="RightWaveFormCanvas"
+                                  Grid.Row="1"
+                                  Grid.ColumnSpan="3"
+                                  Draw="{x:Bind RightVinylRenderer.OnCanvasDraw}"
+                                  Height="100"
+                                  Width="500" />
+
+            <TextBlock Grid.Row="2"
+                       Text="{x:Bind ViewModel.VinylRight.Artist, Mode=OneWay}" />
+
+            <TextBlock Grid.Row="2"
+                       Grid.Column="2"
+                       HorizontalAlignment="Right"
+                       Text="{x:Bind ViewModel.VinylRight.Title, Mode=OneWay}" />
+
+        </Grid>
 
 
-        <canvas:CanvasAnimatedControl x:Name="AnimatedControl"
+        <canvas:CanvasAnimatedControl x:Name="LeftCanvasAnimatedControl"
                                       Grid.Row="1"
                                       Grid.Column="0"
-                                      CreateResources="OnCreateResources"
-                                      Draw="OnDraw"
-                                      Paused="{x:Bind ViewModel.VinylLeft.IsPaused, Mode=OneWay}"
-                                      TargetElapsedTime="{x:Bind ViewModel.VinylLeft.TargetElapsedTime, Mode=OneWay}" />
+                                      CreateResources="{x:Bind LeftVinylRenderer.OnCreateResources}"
+                                      Draw="{x:Bind LeftVinylRenderer.OnDraw}"
+                                      PointerPressed="{x:Bind LeftVinylRenderer.OnPointerPressed}"
+                                      PointerMoved="{x:Bind LeftVinylRenderer.OnPointerMoved}"
+                                      PointerReleased="{x:Bind LeftVinylRenderer.OnPointerReleased}" />
 
         <StackPanel Grid.Row="1"
                     Grid.Column="1">
 
-            <ToggleButton Margin="5"
-                          IsChecked="{x:Bind ViewModel.VinylLeft.IsHeadPhones, Mode=TwoWay}">
-                <FontIcon Glyph="&#xE7F6;" />
+            <ToggleButton IsChecked="{x:Bind ViewModel.VinylLeft.IsHeadPhones, Mode=TwoWay}"
+                          Style="{StaticResource HeadphonesToggleButtonStyle}">
+                <FontIcon Glyph="{StaticResource HeadPhonesIcon}" />
             </ToggleButton>
 
             <Slider Header="Volume"
@@ -114,37 +174,63 @@
                       Margin="5"
                       Width="200" />
 
-            <StackPanel Orientation="Horizontal">
+            <Grid>
 
-                <visualizer:DiscreteVUBar x:Name="LeftVUBarChanel0"
+                <Grid.ColumnDefinitions>
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition />
+                    <ColumnDefinition Width="Auto" />
+                    <ColumnDefinition Width="Auto" />
+                </Grid.ColumnDefinitions>
+
+                <visualizer:DiscreteVUBar x:Name="LeftVUBarChannel0"
+                                          Grid.Column="0"
                                           ChannelIndex="0"
                                           Height="100"
-                                          Width="20" />
-                <visualizer:DiscreteVUBar x:Name="LeftVUBarChanel1"
+                                          Width="10"
+                                          Levels="{x:Bind ViewModel.VinylLeft.Levels}"
+                                          ElementShadowColor="{x:Bind ViewModel.VinylLeft.ElementShadowColor}"
+                                          ElementShadowBlurRadius="{x:Bind ViewModel.VinylLeft.ElementShadowBlurRadius}"
+                                          ElementShadowOffset="{x:Bind ViewModel.VinylLeft.ElementShadowOffset}" />
+                <visualizer:DiscreteVUBar x:Name="LeftVUBarChannel1"
+                                          Grid.Column="1"
                                           ChannelIndex="1"
                                           Height="100"
-                                          Width="20" />
+                                          Width="10"
+                                          Levels="{x:Bind ViewModel.VinylLeft.Levels}"
+                                          ElementShadowColor="{x:Bind ViewModel.VinylLeft.ElementShadowColor}"
+                                          ElementShadowBlurRadius="{x:Bind ViewModel.VinylLeft.ElementShadowBlurRadius}"
+                                          ElementShadowOffset="{x:Bind ViewModel.VinylLeft.ElementShadowOffset}"/>
 
-                <StackPanel Width="100" />
-
-                <visualizer:DiscreteVUBar x:Name="RightVUBarChanel0"
+                <visualizer:DiscreteVUBar x:Name="RightVUBarChannel0"
+                                          Grid.Column="3"
                                           ChannelIndex="0"
                                           Height="100"
-                                          Width="20" />
-                <visualizer:DiscreteVUBar x:Name="RightVUBarChanel1"
+                                          Width="10"
+                                          Levels="{x:Bind ViewModel.VinylRight.Levels}"
+                                          ElementShadowColor="{x:Bind ViewModel.VinylRight.ElementShadowColor}"
+                                          ElementShadowBlurRadius="{x:Bind ViewModel.VinylRight.ElementShadowBlurRadius}"
+                                          ElementShadowOffset="{x:Bind ViewModel.VinylRight.ElementShadowOffset}" />
+                <visualizer:DiscreteVUBar x:Name="RightVUBarChannel1"
+                                          Grid.Column="4"
                                           ChannelIndex="1"
                                           Height="100"
-                                          Width="20" />
-            </StackPanel>
+                                          Width="10"
+                                          Levels="{x:Bind ViewModel.VinylRight.Levels}"
+                                          ElementShadowColor="{x:Bind ViewModel.VinylRight.ElementShadowColor}"
+                                          ElementShadowBlurRadius="{x:Bind ViewModel.VinylRight.ElementShadowBlurRadius}"
+                                          ElementShadowOffset="{x:Bind ViewModel.VinylRight.ElementShadowOffset}" />
+            </Grid>
 
         </StackPanel>
 
         <StackPanel Grid.Row="1"
                     Grid.Column="3">
 
-            <ToggleButton Margin="5"
-                          IsChecked="{x:Bind ViewModel.VinylRight.IsHeadPhones, Mode=TwoWay}">
-                <FontIcon Glyph="&#xE7F6;" />
+            <ToggleButton IsChecked="{x:Bind ViewModel.VinylRight.IsHeadPhones, Mode=TwoWay}"
+                          Style="{StaticResource HeadphonesToggleButtonStyle}">
+                <FontIcon Glyph="{StaticResource HeadPhonesIcon}" />
             </ToggleButton>
 
             <Slider Header="Volume"
@@ -156,13 +242,14 @@
 
         </StackPanel>
 
-        <canvas:CanvasAnimatedControl x:Name="AnimatedControl2"
+        <canvas:CanvasAnimatedControl x:Name="RightCanvasAnimatedControl"
                                       Grid.Row="1"
                                       Grid.Column="4"
-                                      CreateResources="OnCreateResources2"
-                                      Draw="OnDraw2"
-                                      Paused="{x:Bind ViewModel.VinylRight.IsPaused, Mode=OneWay}"
-                                      TargetElapsedTime="{x:Bind ViewModel.VinylRight.TargetElapsedTime, Mode=OneWay}" />
+                                      CreateResources="{x:Bind RightVinylRenderer.OnCreateResources}"
+                                      Draw="{x:Bind RightVinylRenderer.OnDraw}"
+                                      PointerPressed="{x:Bind RightVinylRenderer.OnPointerPressed}"
+                                      PointerMoved="{x:Bind RightVinylRenderer.OnPointerMoved}"
+                                      PointerReleased="{x:Bind RightVinylRenderer.OnPointerReleased}" />
 
 
         <Slider Grid.Row="2"
@@ -199,17 +286,16 @@
         <StackPanel Grid.Row="3"
                     Orientation="Horizontal">
 
-            <ComboBox Header="TargetElapsedTime:"
-                      ItemsSource="{x:Bind ViewModel.VinylLeft.TargetElapsedTimeList, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.VinylLeft.SelectedTargetElapsedTime, Mode=TwoWay}"
-                      Margin="5" />
+            <ToggleButton IsChecked="{x:Bind ViewModel.VinylLeft.IsPaused, Mode=TwoWay}"
+                          Style="{ThemeResource PlayToggleButtonStyle}">
+                <FontIcon Glyph="{x:Bind ViewModel.VinylLeft.PlayPauseButton, Mode=OneWay}" />
+            </ToggleButton>
 
-            <ToggleButton Content="Pause"
-                          Margin="5"
-                          IsChecked="{x:Bind ViewModel.VinylLeft.IsPaused, Mode=TwoWay}" />
-
-            <Button Content="Open"
-                    Command="{x:Bind ViewModel.VinylLeft.OpenButtonCommand}" />
+            <Button Command="{x:Bind ViewModel.VinylLeft.OpenButtonCommand}"
+                    Background="Transparent"
+                    Foreground="{StaticResource SystemColorHighlightBrush}">
+                <FontIcon Glyph="{StaticResource EjectIcon}" />
+            </Button>
 
         </StackPanel>
 
@@ -217,19 +303,19 @@
                     Grid.Column="4"
                     Orientation="Horizontal">
 
-            <ComboBox Header="TargetElapsedTime:"
-                      ItemsSource="{x:Bind ViewModel.VinylRight.TargetElapsedTimeList, Mode=OneWay}"
-                      SelectedItem="{x:Bind ViewModel.VinylRight.SelectedTargetElapsedTime, Mode=TwoWay}"
-                      Margin="5" />
+            <ToggleButton IsChecked="{x:Bind ViewModel.VinylRight.IsPaused, Mode=TwoWay}"
+                          Style="{ThemeResource PlayToggleButtonStyle}">
+                <FontIcon Glyph="{x:Bind ViewModel.VinylRight.PlayPauseButton, Mode=OneWay}" />
+            </ToggleButton>
 
-            <ToggleButton Content="Pause"
-                          Margin="5"
-                          IsChecked="{x:Bind ViewModel.VinylRight.IsPaused, Mode=TwoWay}" />
-
-            <Button Content="Open"
-                    Command="{x:Bind ViewModel.VinylRight.OpenButtonCommand}" />
+            <Button Command="{x:Bind ViewModel.VinylRight.OpenButtonCommand}"
+                    Background="Transparent"
+                    Foreground="{StaticResource SystemColorHighlightBrush}">
+                <FontIcon Glyph="{StaticResource EjectIcon}" />
+            </Button>
 
         </StackPanel>
 
     </Grid>
+
 </Page>

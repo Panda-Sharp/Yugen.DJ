@@ -2,6 +2,7 @@
 using System.Linq;
 using System.Threading.Tasks;
 using Windows.Devices.Enumeration;
+using Yugen.DJ.Audio.SystemVolume;
 using Yugen.DJ.Interfaces;
 
 namespace Yugen.DJ.Services
@@ -12,6 +13,10 @@ namespace Yugen.DJ.Services
         public DeviceInformation MasterAudioDeviceInformation { get; set; }
         public DeviceInformation HeadphonesAudioDeviceInformation { get; set; }
 
+        public double GetMasterVolume() => VolumeControl.GetVolume();
+
+        public void SetVolume(double volume) => VolumeControl.SetVolume(volume / 100);
+
         public async Task Init()
         {
             DeviceInfoCollection = await DeviceInformation.FindAllAsync(DeviceClass.AudioRender);
@@ -19,5 +24,5 @@ namespace Yugen.DJ.Services
             MasterAudioDeviceInformation = DeviceInfoCollection.FirstOrDefault();
             HeadphonesAudioDeviceInformation = DeviceInfoCollection.ElementAtOrDefault(1);
         }
-     }
+    }
 }

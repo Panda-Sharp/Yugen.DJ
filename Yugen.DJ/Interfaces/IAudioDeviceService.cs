@@ -9,6 +9,10 @@ namespace Yugen.DJ.Interfaces
         DeviceInformation MasterAudioDeviceInformation { get; set; }
         DeviceInformation HeadphonesAudioDeviceInformation { get; set; }
 
+        double GetMasterVolume();
+
+        void SetVolume(double volume);
+
         Task Init();
     }
 }
