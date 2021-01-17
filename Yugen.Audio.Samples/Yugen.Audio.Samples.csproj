@@ -1,0 +1,295 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Project ToolsVersion="15.0" DefaultTargets="Build" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <Import Project="$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props" Condition="Exists('$(MSBuildExtensionsPath)\$(MSBuildToolsVersion)\Microsoft.Common.props')" />
+  <PropertyGroup>
+    <Configuration Condition=" '$(Configuration)' == '' ">Debug</Configuration>
+    <Platform Condition=" '$(Platform)' == '' ">x86</Platform>
+    <ProjectGuid>{9AE228E3-A946-4A3F-B544-DDCC389CA510}</ProjectGuid>
+    <OutputType>AppContainerExe</OutputType>
+    <AppDesignerFolder>Properties</AppDesignerFolder>
+    <RootNamespace>Yugen.Audio.Samples</RootNamespace>
+    <AssemblyName>Yugen.Audio.Samples</AssemblyName>
+    <DefaultLanguage>en-US</DefaultLanguage>
+    <TargetPlatformIdentifier>UAP</TargetPlatformIdentifier>
+    <TargetPlatformVersion Condition=" '$(TargetPlatformVersion)' == '' ">10.0.19041.0</TargetPlatformVersion>
+    <TargetPlatformMinVersion>10.0.17763.0</TargetPlatformMinVersion>
+    <MinimumVisualStudioVersion>14</MinimumVisualStudioVersion>
+    <FileAlignment>512</FileAlignment>
+    <ProjectTypeGuids>{A5A43C5B-DE2A-4C0C-9213-0A381AF9435A};{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</ProjectTypeGuids>
+    <WindowsXamlEnableOverview>true</WindowsXamlEnableOverview>
+    <AppxPackageSigningEnabled>false</AppxPackageSigningEnabled>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x86'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x86\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x86'">
+    <OutputPath>bin\x86\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x86</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM'">
+    <OutputPath>bin\ARM\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|ARM64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\ARM64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|ARM64'">
+    <OutputPath>bin\ARM64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>ARM64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Debug|x64'">
+    <DebugSymbols>true</DebugSymbols>
+    <OutputPath>bin\x64\Debug\</OutputPath>
+    <DefineConstants>DEBUG;TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>full</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)' == 'Release|x64'">
+    <OutputPath>bin\x64\Release\</OutputPath>
+    <DefineConstants>TRACE;NETFX_CORE;WINDOWS_UWP</DefineConstants>
+    <Optimize>true</Optimize>
+    <NoWarn>;2008</NoWarn>
+    <DebugType>pdbonly</DebugType>
+    <PlatformTarget>x64</PlatformTarget>
+    <UseVSHostingProcess>false</UseVSHostingProcess>
+    <ErrorReport>prompt</ErrorReport>
+    <Prefer32Bit>true</Prefer32Bit>
+    <UseDotNetNativeToolchain>true</UseDotNetNativeToolchain>
+    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
+  </PropertyGroup>
+  <PropertyGroup>
+    <RestoreProjectStyle>PackageReference</RestoreProjectStyle>
+  </PropertyGroup>
+  <ItemGroup>
+    <Compile Include="App.xaml.cs">
+      <DependentUpon>App.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="AppShell.xaml.cs">
+      <DependentUpon>AppShell.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Constants\Menu.cs" />
+    <Compile Include="Helpers\AudioDevicesHelper.cs" />
+    <Compile Include="Interfaces\IAudioGraphAudioPlayer.cs" />
+    <Compile Include="Services\AudioGraphAudioPlayer.cs" />
+    <Compile Include="Models\AudioPlayerState.cs" />
+    <Compile Include="Services\AudioPlayer.cs" />
+    <Compile Include="Interfaces\IMemoryBufferByteAccess.cs" />
+    <Compile Include="Services\VortexAudioPlayer.cs" />
+    <Compile Include="Services\CsCoreAudioPlayer.cs" />
+    <Compile Include="Extensions\WaveSourceExtensions.cs" />
+    <Compile Include="Interfaces\IAudioPlayer.cs" />
+    <Compile Include="Services\SharpDXAudioPlayer.cs" />
+    <Compile Include="ViewModels\WaveformViewModel.cs" />
+    <Compile Include="ViewModels\AudioFrameInputNodeViewModel.cs" />
+    <Compile Include="ViewModels\AudioGraphViewModel.cs" />
+    <Compile Include="ViewModels\AppShellViewModel.cs" />
+    <Compile Include="ViewModels\Controls\VuBarsVieModel.cs" />
+    <Compile Include="ViewModels\CsCoreViewModel.cs" />
+    <Compile Include="ViewModels\SharpDXViewModel.cs" />
+    <Compile Include="Views\WaveformPage.xaml.cs">
+      <DependentUpon>WaveformPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AudioFrameInputNodePage.xaml.cs">
+      <DependentUpon>AudioFrameInputNodePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\Controls\VuBars.xaml.cs">
+      <DependentUpon>VuBars.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\CsCorePage.xaml.cs">
+      <DependentUpon>CsCorePage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\SharpDXPage.xaml.cs">
+      <DependentUpon>SharpDXPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\AudioGraphPage.xaml.cs">
+      <DependentUpon>AudioGraphPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="Wasapi\Com\Enum\AudioClientBufferFlags.cs" />
+    <Compile Include="Wasapi\Com\Enum\AudioClientShareModeEnum.cs" />
+    <Compile Include="Wasapi\Com\Enum\AudioClientStreamFlagsEnum.cs" />
+    <Compile Include="Wasapi\Com\Enum\ChannelMask.cs" />
+    <Compile Include="Wasapi\Com\Enum\ClsCtxEnum.cs" />
+    <Compile Include="Wasapi\Com\Enum\DataFlowEnum.cs" />
+    <Compile Include="Wasapi\Com\Enum\DeviceStateEnum.cs" />
+    <Compile Include="Wasapi\Com\Enum\RoleEnum.cs" />
+    <Compile Include="Wasapi\Com\Enum\StorageAccessModeEnum.cs" />
+    <Compile Include="Wasapi\Com\Enum\WaveFormatEncodingEnum.cs" />
+    <Compile Include="Wasapi\Com\Factory.cs" />
+    <Compile Include="Wasapi\Com\Interface\IAudioCaptureClient.cs" />
+    <Compile Include="Wasapi\Com\Interface\IAudioClient.cs" />
+    <Compile Include="Wasapi\Com\Interface\IAudioRenderClient.cs" />
+    <Compile Include="Wasapi\Com\Interface\IMMDevice.cs" />
+    <Compile Include="Wasapi\Com\Interface\IMMDeviceEnumerator.cs" />
+    <Compile Include="Wasapi\Com\Interface\MMDeviceEnumerator.cs" />
+    <Compile Include="Wasapi\Com\Interface\WaveFormat.cs" />
+    <Compile Include="Wasapi\IAudioInDriver.cs" />
+    <Compile Include="Wasapi\IAudioOutDriver.cs" />
+    <Compile Include="Wasapi\WasapiDriver.cs" />
+    <Compile Include="Wasapi\WasapiInDriver.cs" />
+    <Compile Include="Wasapi\WasapiLoopbackDriver.cs" />
+    <Compile Include="Wasapi\WasapiOutDriver.cs" />
+  </ItemGroup>
+  <ItemGroup>
+    <AppxManifest Include="Package.appxmanifest">
+      <SubType>Designer</SubType>
+    </AppxManifest>
+  </ItemGroup>
+  <ItemGroup>
+    <Content Include="Properties\Default.rd.xml" />
+    <Content Include="Assets\LockScreenLogo.scale-200.png" />
+    <Content Include="Assets\SplashScreen.scale-200.png" />
+    <Content Include="Assets\Square150x150Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.scale-200.png" />
+    <Content Include="Assets\Square44x44Logo.targetsize-24_altform-unplated.png" />
+    <Content Include="Assets\StoreLogo.png" />
+    <Content Include="Assets\Wide310x150Logo.scale-200.png" />
+  </ItemGroup>
+  <ItemGroup>
+    <ApplicationDefinition Include="App.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </ApplicationDefinition>
+    <Page Include="AppShell.xaml">
+      <SubType>Designer</SubType>
+      <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\WaveformPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AudioFrameInputNodePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\Controls\VuBars.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\CsCorePage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\SharpDXPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+    <Page Include="Views\AudioGraphPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="CSCore">
+      <Version>1.2.1.2</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.NETCore.UniversalWindowsPlatform">
+      <Version>6.2.11</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.UI.Xaml">
+      <Version>2.5.0</Version>
+    </PackageReference>
+    <PackageReference Include="Microsoft.Xaml.Behaviors.Uwp.Managed">
+      <Version>2.0.1</Version>
+    </PackageReference>
+    <PackageReference Include="SharpDX.MediaFoundation">
+      <Version>4.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="SharpDX.XAudio2">
+      <Version>4.2.0</Version>
+    </PackageReference>
+    <PackageReference Include="Vortice.XAudio2">
+      <Version>1.8.55</Version>
+    </PackageReference>
+    <PackageReference Include="Win2D.uwp">
+      <Version>1.25.0</Version>
+    </PackageReference>
+    <PackageReference Include="Yugen.Toolkit.Uwp">
+      <Version>1.0.40</Version>
+    </PackageReference>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\AudioVisualizer\AudioVisualizer.vcxproj">
+      <Project>{da1a2266-1149-4a19-8a3a-3f1ca7717a6f}</Project>
+      <Name>AudioVisualizer</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\Yugen.Toolkit.Uwp.Audio\Yugen.Toolkit.Uwp.Audio.csproj">
+      <Project>{d76f470b-0b55-4669-b878-1c8c8b207f54}</Project>
+      <Name>Yugen.Toolkit.Uwp.Audio</Name>
+    </ProjectReference>
+  </ItemGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '' or '$(VisualStudioVersion)' &lt; '14.0' ">
+    <VisualStudioVersion>14.0</VisualStudioVersion>
+  </PropertyGroup>
+  <Import Project="$(MSBuildExtensionsPath)\Microsoft\WindowsXaml\v$(VisualStudioVersion)\Microsoft.Windows.UI.Xaml.CSharp.targets" />
+  <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
+       Other similar extension points exist, see Microsoft.Common.targets.
+  <Target Name="BeforeBuild">
+  </Target>
+  <Target Name="AfterBuild">
+  </Target>
+  -->
+</Project>

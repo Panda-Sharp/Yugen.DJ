@@ -1,6 +1,5 @@
 ﻿using Microsoft.Graphics.Canvas;
 using Microsoft.Graphics.Canvas.Effects;
-using Microsoft.Graphics.Canvas.UI;
 using Microsoft.Graphics.Canvas.UI.Xaml;
 using System;
 using System.Numerics;
@@ -8,70 +7,41 @@ using System.Threading.Tasks;
 using Windows.Foundation;
 using Windows.UI;
 using Windows.UI.Input;
-using Yugen.DJ.Audio.WaveForm;
-using Yugen.DJ.ViewModels;
+using Windows.UI.Xaml.Input;
+using Yugen.DJ.Helpers;
 
 namespace Yugen.DJ.Renderers
 {
     public class VinylRenderer
     {
-        private const float width = 1000;
-        private const float height = 1000;
-
         private CanvasBitmap _vinylBitmap;
-        private float angle;
-        private bool isTouched;
 
-        public VinylViewModel ViewModel { get; set; }
-        private WaveFormRenderer _waveFormRenderer => ViewModel?.WaveFormRenderer;
+        private float _width = 1000;
+        private float _height = 1000;
+        private float _angle = 0;
+        private bool _isTouched;
 
-        //private readonly TouchPointsRenderer _touchPointsRenderer = new TouchPointsRenderer();
-        public void OnCreateResources(CanvasAnimatedControl sender, CanvasCreateResourcesEventArgs args)
-        {
-            args.TrackAsyncAction(CreateResourcesAsync(sender).AsAsyncAction());
-        }
+        public async Task CreateResourcesAsync(CanvasAnimatedControl sender) =>
+                    _vinylBitmap = await CanvasBitmap.LoadAsync(sender, "Assets/Images/Vinyl.png");
 
-        public async Task CreateResourcesAsync(CanvasAnimatedControl sender)
-        {
-            _vinylBitmap = await CanvasBitmap.LoadAsync(sender, "Assets/Images/Vinyl.png");
-        }
-
-        public void OnDraw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args)
+        public void Draw(ICanvasAnimatedControl sender, CanvasAnimatedDrawEventArgs args, bool isPaused, TimeSpan position, double pitch)
         {
             var ds = args.DrawingSession;
-            ds.Transform = CalculateLayout(sender.Size, width, height);
-            //var time = args.Timing.ElapsedTime;
+            ds.Transform = RendererHelper.CalculateLayout(sender.Size, _width, _height);
 
-            if (isTouched || ViewModel == null)
+            //if (!isPaused)
+            //{
+            //    _angle += 0.1f;
+            //}
+            if (_isTouched)
             {
-                Draw(sender, ds, angle);
+                //Draw(sender, ds, _angle);
             }
             else
             {
-                Draw(sender, ds, ViewModel.Position);
+                _angle = TimeToAngle(position, pitch);
             }
 
-            //ds.Transform = Matrix3x2.Identity;
-            //lock (_touchPointsRenderer)
-            //{
-            //    _touchPointsRenderer.Draw(ds);
-            //}
-        }
-
-        public void Draw(ICanvasAnimatedControl sender, CanvasDrawingSession ds, TimeSpan timingInformation)
-        {
-            var fractionSecond = (double)timingInformation.Milliseconds / 1000;
-            var fractionSecondAngle = (float)(2 * Math.PI * fractionSecond);
-            var angle = (float)(fractionSecondAngle % (2 * Math.PI));
-
-            var pitch = ((float)ViewModel.Pitch + 51) / 10;
-            angle += pitch;
-
-            Draw(sender, ds, angle);
-        }
-
-        public void Draw(ICanvasAnimatedControl sender, CanvasDrawingSession ds, float angle)
-        {
             try
             {
                 var originalImageRect = _vinylBitmap.GetBounds(ds);
@@ -82,7 +52,7 @@ namespace Yugen.DJ.Renderers
                 ICanvasImage image = new Transform2DEffect
                 {
                     Source = _vinylBitmap,
-                    TransformMatrix = Matrix3x2.CreateRotation(angle, endpoint)
+                    TransformMatrix = Matrix3x2.CreateRotation(_angle, endpoint)
                 };
 
                 var offset = sender.Size.ToVector2() * ds.Transform.M11 / 2;
@@ -91,32 +61,26 @@ namespace Yugen.DJ.Renderers
             catch { }
         }
 
-        //public void Draw(ICanvasAnimatedControl sender, CanvasTimingInformation timingInformation, CanvasDrawingSession ds)
-        //{
-        //    double fractionSecond;
-        //    int seconds;
-        //    var updatesPerSecond = 1000.0 / sender.TargetElapsedTime.TotalMilliseconds;
-        //    seconds = (int)(timingInformation.UpdateCount / updatesPerSecond % 10);
-        //    var updates = (double)timingInformation.UpdateCount;
-        //    fractionSecond = updates / updatesPerSecond % 1.0;
-        //    var Angle = (float)Math.PI * (seconds / 10.0f) * 2.0f;
-        //    Rotate(ds, fractionSecond);
-        //}
-
-        public void OnPointerPressed(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        private float TimeToAngle(TimeSpan timingInformation, double pitch)
         {
-            isTouched = true;
+            var fractionSecond = (double)timingInformation.Milliseconds / 1000;
+            var fractionSecondAngle = (float)(2 * Math.PI * fractionSecond);
+            var angle = (float)(fractionSecondAngle % (2 * Math.PI));
 
-            //lock (_touchPointsRenderer)
-            //{
-            //    _touchPointsRenderer.OnPointerPressed();
-            //}
+            var pitchRatio = ((float)pitch + 51) / 10;
+
+            angle += pitchRatio;
+
+            return angle;
         }
 
-        public void OnPointerMoved(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
+        public void PointerPressed(object sender, PointerRoutedEventArgs e) => 
+            _isTouched = true;
+
+        public void PointerMoved(object sender, PointerRoutedEventArgs e)
         {
-            if (sender is CanvasAnimatedControl canvasAnimatedControl
-                && isTouched)
+            if (sender is CanvasAnimatedControl canvasAnimatedControl &&
+                _isTouched)
             {
                 PointerPoint currentLocation = e.GetCurrentPoint(canvasAnimatedControl);
 
@@ -134,37 +98,48 @@ namespace Yugen.DJ.Renderers
                     x -= 180;
                 }
 
-                angle = (float)x / 100;
+                _angle = (float)x / 100;
             }
-
-            //lock (_touchPointsRenderer)
-            //{
-            //    _touchPointsRenderer.OnPointerMoved(e.GetIntermediatePoints(canvasAnimatedControl));
-            //}
         }
 
-        public void OnPointerReleased(object sender, Windows.UI.Xaml.Input.PointerRoutedEventArgs e)
-        {
-            isTouched = false;
-        }
+        public void PointerReleased(object sender, PointerRoutedEventArgs e) => 
+            _isTouched = false;
 
-        public void OnCanvasDraw(CanvasControl sender, CanvasDrawEventArgs args)
-        {
-            _waveFormRenderer?.DrawLine(sender, args.DrawingSession);
-        }
 
-        private static Matrix3x2 CalculateLayout(Size size, float width, float height)
-        {
-            var targetWidth = (float)size.Width;
-            var targetHeight = (float)size.Height;
-            var scaleFactor = targetWidth / width;
+        //public void Draw(ICanvasAnimatedControl sender, CanvasTimingInformation timingInformation, CanvasDrawingSession ds)
+        //{
+        //    var updatesPerSecond = 1000.0 / sender.TargetElapsedTime.TotalMilliseconds;
+        //    var seconds = (int)(timingInformation.UpdateCount / updatesPerSecond % 10);
+        //    var updates = (double)timingInformation.UpdateCount;
+        //    var fractionSecond = updates / updatesPerSecond % 1.0;
+        //    var Angle = (float)Math.PI * (seconds / 10.0f) * 2.0f;
+        //    Rotate(ds, fractionSecond);
+        //}
 
-            if (height * scaleFactor > targetHeight)
-            {
-                scaleFactor = targetHeight / height;
-            }
+        //public void Rotate(CanvasDrawingSession ds, double fractionSecond)
+        //{
+        //    var fractionSecondAngle = (float)(2 * Math.PI * fractionSecond);
+        //    var angle = (float)(fractionSecondAngle % (2 * Math.PI));
 
-            return Matrix3x2.CreateScale(scaleFactor, scaleFactor);
-        }
+        //    try
+        //    {
+        //        var originalImageRect = _vinylBitmap.GetBounds(ds);
+        //        var endpoint = new Vector2((float)originalImageRect.Width / 2, (float)originalImageRect.Height / 2);
+
+        //        ds.Clear(Colors.Transparent);
+
+        //        ICanvasImage image = new Transform2DEffect
+        //        {
+        //            Source = _vinylBitmap,
+        //            TransformMatrix = Matrix3x2.CreateRotation(angle, endpoint)
+        //        };
+
+        //        var sourceRect = image.GetBounds(ds);
+        //        ds.DrawImage(image);
+        //    }
+        //    catch
+        //    {
+        //    }
+        //}
     }
 }

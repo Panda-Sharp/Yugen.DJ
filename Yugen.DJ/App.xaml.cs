@@ -1,18 +1,23 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.Logging;
-using NLog.Config;
-using NLog.Extensions.Logging;
-using NLog.Targets;
+using Serilog;
+using Serilog.Events;
 using System;
+using System.IO;
 using Windows.ApplicationModel;
 using Windows.ApplicationModel.Activation;
 using Windows.Storage;
 using Windows.UI.Xaml;
 using Windows.UI.Xaml.Controls;
 using Windows.UI.Xaml.Navigation;
-using Yugen.DJ.DependencyInjection;
+using Yugen.DJ.Audio.BPM;
+using Yugen.DJ.Factories;
 using Yugen.DJ.Interfaces;
+using Yugen.DJ.Renderers;
 using Yugen.DJ.Services;
+using Yugen.DJ.ViewModels;
+using Yugen.DJ.Views;
+using Yugen.Toolkit.Standard.Extensions;
+using Yugen.Toolkit.Uwp.Audio.Waveform.Services;
 
 namespace Yugen.DJ
 {
@@ -27,41 +32,15 @@ namespace Yugen.DJ
         /// </summary>
         public App()
         {
+            Services = ConfigureServices();
+
             this.InitializeComponent();
             this.Suspending += OnSuspending;
-
-            Ioc.Default.ConfigureServices(collection =>
-            {
-                collection.AddSingleton<IAudioDeviceService, AudioDeviceService>();
-                collection.AddTransient<IAudioService, AudioService>();
-                collection.AddLogging(loggingBuilder =>
-                {
-                    // UWP is very restrictive of where you can save files on the disk.
-                    // The preferred place to do that is app's local folder.
-                    StorageFolder folder = ApplicationData.Current.LocalFolder;
-                    string fullPath = $"{folder.Path}\\Logs\\{DateTime.Now:yyyy_MM_dd_HH_mm_ss}.log";
-
-                    var config = new LoggingConfiguration();
-                    var logFile = new FileTarget()
-                    {
-                        FileName = fullPath,
-                        Layout = "${longdate} ${uppercase:${level}} ${message} ${exception}",
-                        ConcurrentWrites = false
-                    };
-                    var logTrace = new TraceTarget();
-                    // var logOutput = new OutputDebugStringTarget();
-
-                    // Rules for mapping loggers to targets
-                    config.AddRule(NLog.LogLevel.Debug, NLog.LogLevel.Fatal, logTrace);
-                    config.AddRule(NLog.LogLevel.Info, NLog.LogLevel.Fatal, logFile);
-
-                    // configure Logging with NLog
-                    loggingBuilder.ClearProviders();
-                    loggingBuilder.SetMinimumLevel(Microsoft.Extensions.Logging.LogLevel.Trace);
-                    loggingBuilder.AddNLog(config);
-                });
-            });
         }
+
+        public new static App Current => (App)Application.Current;
+
+        public IServiceProvider Services { get; }
 
         /// <summary>
         /// Invoked when the application is launched normally by the end user.  Other entry points
@@ -74,6 +53,8 @@ namespace Yugen.DJ
             // just ensure that the window is active
             if (!(Window.Current.Content is Frame rootFrame))
             {
+                InitializeServices();
+
                 // Create a Frame to act as the navigation context and navigate to the first page
                 rootFrame = new Frame();
 
@@ -124,6 +105,56 @@ namespace Yugen.DJ
             var deferral = e.SuspendingOperation.GetDeferral();
             //TODO: Save application state and stop any background activity
             deferral.Complete();
+        }
+
+        private IServiceProvider ConfigureServices()
+        {
+            string logFilePath = Path.Combine(ApplicationData.Current.LocalFolder.Path, "Logs\\Yugen.Dj.Log.");
+
+            Log.Logger = new LoggerConfiguration()
+                   .MinimumLevel.Debug()
+                   .WriteTo.Debug()
+                   .WriteTo.File(logFilePath, restrictedToMinimumLevel: LogEventLevel.Information)
+                   .CreateLogger();
+
+            //Log.Debug("Serilog started Debug!");
+            //Log.Information("Serilog started Information!");
+            //Log.Warning("Serilog started Warning!");
+
+            return new ServiceCollection()
+                .AddSingleton<IAppService, AppService>()
+                .AddSingleton<IAudioDeviceService, AudioDeviceService>()
+                .AddSingleton<IMixerService, MixerService>()
+                .AddTransient<IDockService, DockService>()
+
+                .AddTransient<IAudioPlaybackFactory, AudioPlaybackFactory>()
+                .AddSingletonFactory<LeftAudioPlaybackService>()
+                .AddSingletonFactory<RightAudioPlaybackService>()
+                .AddTransient<IAudioGraphService, AudioGraphService>()
+
+                .AddTransient<IAudioVisualizerService, AudioVisualizerService>()
+                .AddTransient<IBPMService, BPMService>()
+                .AddTransient<ISongService, SongService>()
+                .AddTransient<IWaveformRendererService, WaveformRendererService>()
+
+                .AddTransient<DeckViewModel>()
+                .AddSingleton<MainViewModel>()
+                .AddSingleton<MixerViewModel>()
+                .AddSingleton<SettingsViewModel>()
+                .AddTransient<VolumeViewModel>()
+
+                .AddTransient<VinylRenderer>()
+
+                .AddLogging(loggingBuilder =>
+                {
+                    loggingBuilder.AddSerilog(dispose: true);
+                })
+                .BuildServiceProvider();
+        }
+
+        private void InitializeServices()
+        {
+            Services.GetService<IAudioDeviceService>().Init();
         }
     }
 }

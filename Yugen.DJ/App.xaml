@@ -2,14 +2,23 @@
              xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:local="using:Yugen.DJ"
-             xmlns:converters="using:Yugen.Toolkit.Uwp.Converters">
+             xmlns:converters="using:Yugen.Toolkit.Uwp.Converters"
+             xmlns:media="http://schemas.microsoft.com/winfx/2006/xaml/presentation">
 
     <Application.Resources>
 
         <x:String x:Key="HeadPhonesIcon">&#xE7F6;</x:String>
         <x:String x:Key="EjectIcon">&#xF847;</x:String>
+        <x:String x:Key="SettingsIcon">&#xE713;</x:String>
         
         <converters:BoolToVisibilityConverter x:Key="BoolToVisibilityConverter" />
+
+        <media:AcrylicBrush x:Key="CustomAcrylicBrush"
+                            BackgroundSource="Backdrop"
+                            TintOpacity="0.5"
+                            TintColor="#FF000000"
+                            FallbackColor="#FF000000" />
+
 
         <Style x:Key="HeadphonesToggleButtonStyle"
                TargetType="ToggleButton">
