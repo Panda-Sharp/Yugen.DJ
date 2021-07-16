@@ -18,32 +18,26 @@ namespace Yugen.Audio.Samples.ViewModels
     {
         private readonly IWaveformRendererService _waveformRendererService;
 
-        private Stream _fileStream;
-
         public WaveformViewModel(IWaveformRendererService waveformRendererService)
         {
             _waveformRendererService = waveformRendererService;
-
-            OpenCommand = new AsyncRelayCommand(OpenCommandBehavior);
         }
 
         public event EventHandler WaveformGenerated;
-
-        public ICommand OpenCommand { get; }
 
         public void WaveformRendererServiceDrawLine(CanvasControl sender, CanvasDrawingSession drawingSession)
         {
             _waveformRendererService.DrawLine(sender, drawingSession);
         }
 
-        public async Task GenerateAudioData()
+        public async Task GenerateAudioData(Stream stream)
         {
             ISampleProvider isp;
             long samples;
 
             await Task.Run(() =>
             {
-                using (var reader = new StreamMediaFoundationReader(_fileStream))
+                using (var reader = new StreamMediaFoundationReader(stream))
                 {
                     isp = reader.ToSampleProvider();
                     var Buffer = new float[reader.Length / 2];
@@ -58,28 +52,8 @@ namespace Yugen.Audio.Samples.ViewModels
 
                 _waveformRendererService.Render(isp, samples);
                 WaveformGenerated?.Invoke(this, EventArgs.Empty);
+
             });
-        }
-
-        private async Task GetFileStream()
-        {
-            var audioFile = await FilePickerHelper.OpenFile(
-                     new List<string> { ".mp3" },
-                     PickerLocationId.MusicLibrary
-                 );
-
-            if (audioFile != null)
-            {
-                var ras = await audioFile.OpenReadAsync();
-                _fileStream = ras.AsStreamForRead();
-            }
-        }
-
-        private async Task OpenCommandBehavior()
-        {
-            await GetFileStream();
-
-            await GenerateAudioData();
         }
     }
 }

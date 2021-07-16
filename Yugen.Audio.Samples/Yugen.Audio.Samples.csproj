@@ -143,7 +143,7 @@
     <Compile Include="Extensions\WaveSourceExtensions.cs" />
     <Compile Include="Interfaces\IAudioPlayer.cs" />
     <Compile Include="Services\SharpDXAudioPlayer.cs" />
-    <Compile Include="ViewModels\Controls\VinylViewModel.cs" />
+    <Compile Include="ViewModels\DeckViewModel.cs" />
     <Compile Include="ViewModels\WaveformViewModel.cs" />
     <Compile Include="ViewModels\AudioFrameInputNodeViewModel.cs" />
     <Compile Include="ViewModels\AudioGraphViewModel.cs" />
@@ -153,6 +153,9 @@
     <Compile Include="ViewModels\SharpDXViewModel.cs" />
     <Compile Include="Helpers\MathHelper.cs" />
     <Compile Include="Renderers\TouchPointsRenderer.cs" />
+    <Compile Include="Views\Controls\Waveform.xaml.cs">
+      <DependentUpon>Waveform.xaml</DependentUpon>
+    </Compile>
     <Compile Include="Views\Controls\Vinyl.xaml.cs">
       <DependentUpon>Vinyl.xaml</DependentUpon>
     </Compile>
@@ -162,6 +165,9 @@
     </Compile>
     <Compile Include="Views\VinylPage.xaml.cs">
       <DependentUpon>VinylPage.xaml</DependentUpon>
+    </Compile>
+    <Compile Include="Views\DeckPage.xaml.cs">
+      <DependentUpon>DeckPage.xaml</DependentUpon>
     </Compile>
     <Compile Include="Views\WaveformPage.xaml.cs">
       <DependentUpon>WaveformPage.xaml</DependentUpon>
@@ -233,6 +239,10 @@
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
     </Page>
+    <Page Include="Views\Controls\Waveform.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
+    </Page>
     <Page Include="Views\Controls\Vinyl.xaml">
       <Generator>MSBuild:Compile</Generator>
       <SubType>Designer</SubType>
@@ -244,6 +254,10 @@
     <Page Include="Views\VinylPage.xaml">
       <SubType>Designer</SubType>
       <Generator>MSBuild:Compile</Generator>
+    </Page>
+    <Page Include="Views\DeckPage.xaml">
+      <Generator>MSBuild:Compile</Generator>
+      <SubType>Designer</SubType>
     </Page>
     <Page Include="Views\WaveformPage.xaml">
       <Generator>MSBuild:Compile</Generator>
@@ -309,10 +323,6 @@
     </PackageReference>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\AudioVisualizer\AudioVisualizer.vcxproj">
-      <Project>{da1a2266-1149-4a19-8a3a-3f1ca7717a6f}</Project>
-      <Name>AudioVisualizer</Name>
-    </ProjectReference>
     <ProjectReference Include="..\Yugen.Toolkit.Uwp.Audio\Yugen.Toolkit.Uwp.Audio.csproj">
       <Project>{d76f470b-0b55-4669-b878-1c8c8b207f54}</Project>
       <Name>Yugen.Toolkit.Uwp.Audio</Name>

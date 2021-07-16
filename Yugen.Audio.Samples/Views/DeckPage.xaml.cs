@@ -4,9 +4,9 @@ using Yugen.Audio.Samples.ViewModels;
 
 namespace Yugen.Audio.Samples.Views
 {
-    public sealed partial class WaveformPage : Page
+    public sealed partial class DeckPage : Page
     {
-        public WaveformPage()
+        public DeckPage()
         {
             this.InitializeComponent();
 

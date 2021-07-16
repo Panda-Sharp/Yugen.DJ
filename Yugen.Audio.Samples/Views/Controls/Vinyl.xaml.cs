@@ -68,7 +68,7 @@ namespace Yugen.Audio.Samples.Views.Controls
                 _touchPointsRenderer.OnPointerPressed();
             }
 
-            animatedControl.Invalidate();
+            VinylCanvasAnimated.Invalidate();
         }
 
         private void OnPointerMoved(object sender, PointerRoutedEventArgs e)
@@ -77,17 +77,17 @@ namespace Yugen.Audio.Samples.Views.Controls
 
             lock (_touchPointsRenderer)
             {
-                _touchPointsRenderer.OnPointerMoved(e.GetIntermediatePoints(animatedControl));
+                _touchPointsRenderer.OnPointerMoved(e.GetIntermediatePoints(VinylCanvasAnimated));
             }
 
-            animatedControl.Invalidate();
+            VinylCanvasAnimated.Invalidate();
         }
 
         private void OnPointerReleased(object sender, PointerRoutedEventArgs e)
         {
             _vinylRenderer.PointerReleased(sender, e);
 
-            //animatedControl.Invalidate();
+            //VinylCanvasAnimated.Invalidate();
         }
 
         public void PauseToggled(bool isChecked) => _vinylRenderer.PauseToggled(isChecked);
@@ -97,8 +97,8 @@ namespace Yugen.Audio.Samples.Views.Controls
         private void OnUnloaded(object sender, RoutedEventArgs e)
         {
             // Explicitly remove references to allow the Win2D controls to get garbage collected
-            animatedControl.RemoveFromVisualTree();
-            animatedControl = null;
+            VinylCanvasAnimated.RemoveFromVisualTree();
+            VinylCanvasAnimated = null;
         }
     }
 }

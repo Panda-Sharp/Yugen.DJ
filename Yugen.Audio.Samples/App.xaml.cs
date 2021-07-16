@@ -115,8 +115,8 @@ namespace Yugen.Audio.Samples
                 .AddSingleton<CsCoreViewModel>()
                 .AddSingleton<SharpDXViewModel>()
                 .AddSingleton<VuBarsVieModel>()
-                .AddSingleton<VinylViewModel>()
                 .AddSingleton<WaveformViewModel>()
+                .AddSingleton<DeckViewModel>()
                 .AddSingleton<VinylRenderer>()
                 .BuildServiceProvider();
         }
